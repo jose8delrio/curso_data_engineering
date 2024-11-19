@@ -3,6 +3,8 @@ version: 2
 sources:
 
   - name: sql_server_dbo # Nombre del origen (lo puedes personalizar)
+    description: >
+      Raw data de la bronze del esquema sql_server.
     database: ALUMNO23_DEV_BRONZE_DB # Nombre de la base de datos
     schema: sql_server_dbo # Nombre del esquema, reemplázalo con el nombre correcto de tu esquema
 
@@ -19,52 +21,93 @@ sources:
 
       - name: addresses
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Direcciones donde VIVEN los usuarios.
         columns:
           - name: ADDRESS_ID
           - name: ZIPCODE
           - name: COUNTRY
           - name: ADDRESS
           - name: STATE
+            description: >
+              Estado (país)
           - name: _FIVETRAN_DELETED
           - name: _FIVETRAN_SYNCED
 
       - name: events
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Eventos que suceden por visita a la web de cada usuario.
         columns:
           - name: EVENT_ID
           - name: PAGE_URL
+            description: >
+              url de la web, realmente no añade info.
           - name: EVENT_TYPE
+            description: >
+              Puede estar en checkout, package_shipped, add_to_cart, page_view.
           - name: USER_ID
+            description: >
+              Sesión de usuario, importante para ver qué ha hecho cada usuario y en qué estado está el pedido.
+              Un user_id puede tener n events type.
           - name: PRODUCT_ID
+            description: >
+              Algunos están vacíos porque acumulan varios productos dependiendo de si el usuario ha hecho varios pedidos.
+              Es decir, m products_id pueden perteneces a 1 user_id. NO hay product_id en el caso de checkout y package_shipped.
           - name: SESSION_ID
+            description: >
+              Puede ser que el mismo user_id tenga sesiones diferentes. Es decir que 1 user_ id tendrá n Session_id
           - name: CREATED_AT
+            description: >
+              Importante para ver cuando un evento se ha realizado, cuánto ha tardado (optimización página) e incluso si hay que cambiar
+              el precio/imagen de un artículo (marketing). 
           - name: ORDER_ID
+            description: >
+              Checkout y package_delivered tiene el mismo order_id, los demás NO tienen order_id. 
+              Es decir, cada order_id puede tener 1 o 2 event_type.
           - name: _FIVETRAN_DELETED
           - name: _FIVETRAN_SYNCED
 
       - name: orders
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Pedidos hechos por usuario.
         columns:
           - name: ORDER_ID
           - name: SHIPPING_SERVICE
+            description: >
+              ups,fedez,dhl... No tiene mucha utilidad aquí, crear una dimensión nueva con esta columna así ahorro cómputo.
           - name: SHIPPING_COST
           - name: ADDRESS_ID
+            description: >
+              OJO! Si cruzo para ver la dirección con esta tabla veo DONDE se entrega el paquete. No donde viven los usuarios.
           - name: CREATED_AT
           - name: PROMO_ID
           - name: ESTIMATED_DELIVERY_AT
+            description: >
+              Hora estimada de entrega del paquete.
           - name: ORDER_COST
           - name: USER_ID
           - name: ORDER_TOTAL
           - name: DELIVERED_AT
+            description: >
+              Entregado a las... Hay nulls ya que el estado está en el status shipped o preparing (en delivered no hay nulls).
           - name: TRACKING_ID
           - name: STATUS
+            description: >
+              delivered, preparing, shipped (no hay mas, comprobado).
           - name: _FIVETRAN_DELETED
           - name: _FIVETRAN_SYNCED
 
       - name: order_items
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Artículos pedidos.
         columns:
           - name: ORDER_ID
+            description: >
+              OJO! Comparte PK con Product_id, es decir, cada combinación es única, pero no impide que un order_id aparezca 
+              varias veces con diferentes product_id, de hecho un order_id puede tener varios product_id.
           - name: PRODUCT_ID
           - name: QUANTITY
           - name: _FIVETRAN_DELETED
@@ -72,33 +115,55 @@ sources:
 
       - name: products
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Los productos (plantas)
         columns:
           - name: PRODUCT_ID
           - name: PRICE
           - name: NAME
           - name: INVENTORY
+            description: >
+              importante que baje con cada pedido(incremental).
           - name: _FIVETRAN_DELETED
           - name: _FIVETRAN_SYNCED
 
       - name: promos
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          Promociones aplicadas a los pedidos, NO a los productos.
         columns:
           - name: PROMO_ID
+            description: >
+              Es un varchar con los nombres de las promociones, hashearlo.
           - name: DISCOUNT
+            description: >
+              descuento absoluto entre 2 y 20.
           - name: STATUS
+            description: >
+              puede ser activo o inactivo, simplemente para saber si está activado, no afecta al cálculo del precio.
           - name: _FIVETRAN_DELETED
           - name: _FIVETRAN_SYNCED
 
       - name: users
         loaded_at_field: _FIVETRAN_SYNCED
+        description: >
+          descripción de los usuarios que piden.
         columns:
           - name: USER_ID
           - name: UPDATED_AT
+            description: >
+              Ultima vez que accedió a la página
           - name: ADDRESS_ID
+            description: >
+              Donde VIVE el usuario.
           - name: LAST_NAME
           - name: CREATED_AT
+            description: >
+              cuando se registró el usuario
           - name: PHONE_NUMBER
           - name: TOTAL_ORDERS
+            description: >
+              número de pedidos que se han hecho. Está todo nulo, borrar?? O completar.
           - name: FIRST_NAME
           - name: EMAIL
           - name: _FIVETRAN_DELETED
