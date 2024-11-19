@@ -3,6 +3,8 @@ version: 2
 sources:
 
   - name: google_sheets # name of the source 
+    description: >
+      Raw data del schema google_sheets de la Bronze.
     schema: google_sheets # this is the schema our raw data lives in
     database: ALUMNO23_DEV_BRONZE_DB # this is the name of our database
 
@@ -13,15 +15,40 @@ sources:
 
     freshness:
       warn_after: {count: 24, period: hour}
-      error_after: {count: 1000, period: hour}
+      error_after: {count: 48, period: hour}
 
     tables:
 
       - name: budget
         loaded_at_field: _fivetran_synced
+        description: >
+          Presupuesto mensual (febrero y marzo por ahora), planificación estado financiero.
         columns:
           - name: _row
+            description: >
+              Número de filas, actúa como PK, se hashea.
+            tests:
+              - not_null
+              - unique
           - name: product_id
+            description: >
+              ID del producto, es un varchar.
+            tests:
+              - not_null
+              - unique
           - name: quantity
+            description: >
+              Número de unidades para cada producto y cada mes para los productos.
+            tests:
+              - not_null
+              - positive_values
           - name: month
+            description: >
+              Cada mes para el presupuesto -> Fin de mes .
+            tests:
+              - not_null
           - name: _fivetran_synced
+            description: >
+              Fecha en que se cargaron los datos.
+            tests:
+              - not_null
