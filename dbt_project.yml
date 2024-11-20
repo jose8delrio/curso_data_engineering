@@ -38,3 +38,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 seeds:
   +database: "ALUMNO23_DEV_BRONZE_DB"
   +schema: "SEEDS"
+
+vars:
+    "dbt_date:time_zone": "America/Los_Angeles"
