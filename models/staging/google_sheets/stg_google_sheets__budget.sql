@@ -12,11 +12,11 @@ WITH src_budget AS (
 
 renamed_casted AS (
     SELECT
-          _row
+          {{ dbt_utils.generate_surrogate_key(['product_id', 'month']) }} as BUDGET_ID
         , product_id
         , quantity
         , month AS fecha_pedido_productos
-        , TO_CHAR(month, 'Mon') AS month_of_year
+        , monthname(month) AS month_of_year
         , _fivetran_synced AS date_load
     FROM src_budget
 )
