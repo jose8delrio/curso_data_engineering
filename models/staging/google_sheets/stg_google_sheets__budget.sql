@@ -14,7 +14,7 @@ renamed_casted AS (
     SELECT
           {{ dbt_utils.generate_surrogate_key(['product_id', 'month']) }} as BUDGET_ID
         , product_id
-        , quantity
+        , quantity AS Cantidad_A_Pedir
         , month AS fecha_pedido_productos
         , monthname(month) AS month_of_year
         , _fivetran_synced AS date_load

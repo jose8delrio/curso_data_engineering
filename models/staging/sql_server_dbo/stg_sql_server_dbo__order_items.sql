@@ -17,7 +17,7 @@ renamed as (
     select
         order_id,
         product_id,
-        quantity,
+        quantity as Cantidad_Pedida_Producto,
         _fivetran_deleted,
         _fivetran_synced
 
