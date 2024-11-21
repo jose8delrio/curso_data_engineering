@@ -7,8 +7,7 @@ models:
       - name: Precio_Producto
         data_type: number
         description: "Costo total presupuestado por producto, calculado como quantity * price."
-        tests:
-          - not_null
+
       - name: _row
         data_type: number
         description: ""
