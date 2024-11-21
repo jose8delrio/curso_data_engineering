@@ -6,7 +6,7 @@ sources:
     description: >
       Raw data del schema google_sheets de la Bronze.
     schema: google_sheets # this is the schema our raw data lives in
-    database: ALUMNO23_DEV_BRONZE_DB # this is the name of our database
+    database: "{{ env_var('DBT_ENVIRONMENTS') }}_BRONZE_DB" # this is the name of our database
 
     quoting:
       database: false
@@ -35,7 +35,6 @@ sources:
               ID del producto, es un varchar.
             tests:
               - not_null
-              - unique
           - name: quantity
             description: >
               Número de unidades para cada producto y cada mes para los productos.
