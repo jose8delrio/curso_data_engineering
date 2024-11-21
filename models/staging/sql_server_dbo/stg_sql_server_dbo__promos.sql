@@ -28,10 +28,10 @@ with_extra_row as (
     select
         md5('no_promo') as promo_id, -- Genera un hash único para 'no_promo'
         'no_promo' as desc_promo,    -- Descripción personalizada
-        cast(null as number(38,0)) as discount, -- Número con precisión
-        cast(null as varchar(256)) as status,   -- Cadena de texto
+        cast(0 as number(38,0)) as discount, -- Número con precisión
+        cast('active' as varchar(256)) as status,   -- Cadena de texto
         cast(null as boolean) as _fivetran_deleted, -- Valor booleano
-        cast(null as timestamp_tz(9)) as _fivetran_synced -- Timestamp con zona horaria
+        cast(CURRENT_TIMESTAMP() as timestamp_tz(9)) as _fivetran_synced -- Timestamp con zona horaria
 )
 
 select * from with_extra_row
