@@ -19,8 +19,8 @@ renamed as (
         price,
         name,
         inventory,
-        _fivetran_deleted,
-        _fivetran_synced
+        _fivetran_deleted as date_deleted_utc,
+        CONVERT_TIMEZONE('UTC', TO_TIMESTAMP_TZ(_fivetran_synced)) as date_load_utc
 
     from src_products
 

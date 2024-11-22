@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_google_sheets__budget
+  - name: base_google_sheets__budget
     description: "renombrado y casteo de budget en base para hacer join en staging."
     columns:
       - name: BUDGET_ID
@@ -33,9 +33,3 @@ models:
         data_type: date
         description: >
           "cambiado a utc, vamos a poner todo en utc."
-      - name: Presupuesto_Producto
-        data_type: number
-        description: >
-          "presupuesto por producto total"
-        tests:
-            - positive_values
