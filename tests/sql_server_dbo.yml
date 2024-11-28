@@ -1,0 +1,6 @@
+version: 2
+
+data_tests:
+  - name: comprob_order_total
+    description: >
+      "comprueba que el cálculo order_cost+quantity*product+shipping_cost-promo=order_total"
