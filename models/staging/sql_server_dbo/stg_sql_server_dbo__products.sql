@@ -16,11 +16,11 @@ renamed as (
 
     select
         product_id,
-        price,
-        name,
-        inventory,
-        _fivetran_deleted as date_deleted_utc,
-        CONVERT_TIMEZONE('UTC', TO_TIMESTAMP_TZ(_fivetran_synced)) as date_load_utc
+        price as product_price,
+        name as product_name,
+        inventory as product_inventory,
+        coalesce(_fivetran_deleted, FALSE) AS product_date_deleted,
+        convert_timezone('UTC', _fivetran_synced) as product_date_load
 
     from src_products
 
