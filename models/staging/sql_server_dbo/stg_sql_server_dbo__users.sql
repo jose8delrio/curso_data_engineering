@@ -1,34 +1,48 @@
 {{
   config(
-    materialized='view'
+    materialized='table'
   )
 }}
 
+
 with 
 
-src_users as (
+base_users as (
 
-    select * from {{ source('sql_server_dbo', 'users') }}
+    select * from {{ ref('_base_sql_server_dbo__users') }}
 
 ),
 
-renamed as (
+source_orders as (
+    select user_id, count(*) as total_orders 
+        from {{ source('sql_server_dbo', 'orders') }} 
+    group by user_id
+),
+
+renamed_users as (
 
     select
-        user_id,
-        updated_at,
+        A.user_id,
         address_id,
         last_name,
-        created_at,
-        phone_number,
-        total_orders,
         first_name,
+        case
+            when B.total_orders is null then 0
+            else B.total_orders
+        end as total_orders,
+        phone_number,
+        coalesce (regexp_like(phone_number, '^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')= true,false) as is_valid_phone_number,
         email,
-        _fivetran_deleted,
-        _fivetran_synced
+        coalesce (regexp_like(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')= true,false) as is_valid_email_address,
+        user_updated_at,
+        user_created_at,
+        user_date_deleted,
+        user_date_load
 
-    from src_users
+    from base_users A
+    left join source_orders B
+    on A.user_id=B.user_id
 
 )
 
-select * from renamed
+select * from renamed_users

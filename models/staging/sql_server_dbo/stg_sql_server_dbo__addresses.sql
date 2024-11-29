@@ -1,32 +1,33 @@
-
 {{
   config(
     materialized='table'
   )
 }}
 
-
-with 
-
-source as (
-
-    select * from {{ source('sql_server_dbo', 'addresses') }}
-
+WITH source AS (
+    SELECT * 
+    FROM {{ source('sql_server_dbo', 'addresses') }}
 ),
 
-renamed as (
-
-    select
-        address_id,
-        zipcode,
-        country,
-        address,
-        state,
-        _fivetran_deleted,
-        _fivetran_synced
-
-    from source
-
+countries AS (
+    SELECT 
+        country_id,
+        country_name
+    FROM {{ ref('_base_sql_server_dbo__countries') }}
 )
 
-select * from renamed
+SELECT
+    s.address_id,
+    s.zipcode,
+    s.address,
+    s.state,
+    c.country_id AS country_id, 
+    COALESCE(s._fivetran_deleted, FALSE) AS address_date_deleted,
+    CONVERT_TIMEZONE('UTC', s._fivetran_synced) AS address_date_load
+FROM 
+    source s
+LEFT JOIN 
+    countries c
+ON 
+    s.country = c.country_name 
+
