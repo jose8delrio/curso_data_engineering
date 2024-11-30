@@ -5,11 +5,13 @@
 }}
 
 with src_orders as(
-    select 
-        tracking_id,
-        shipping_service
+    select
+        case
+            when tracking_id = '' or tracking_id is null then md5('no_tracking')
+            else tracking_id
+        end as tracking_id,
+        coalesce(nullif(trim(shipping_service), ''), 'not_assigned_yet') as shipping_service
     from {{ source('sql_server_dbo','orders') }}
-    where tracking_id != '' and shipping_service != ''
 )
 
 select * from src_orders

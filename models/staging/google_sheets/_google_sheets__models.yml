@@ -2,40 +2,40 @@ version: 2
 
 models:
   - name: stg_google_sheets__budget
-    description: "renombrado y casteo de budget en base para hacer join en staging."
+    description: ""
     columns:
-      - name: BUDGET_ID
+      - name: budget_id
         data_type: varchar
-        description: >
-          "FK de budget cruzado con product_id y month(fecha)"
-        tests:
-            - unique
-            - not_null
+        description: ""
+
       - name: product_id
         data_type: varchar
-        description: >
-          "product_id No es único ya que se repite cada mes"
-        tests:
-            - not_null
+        description: ""
+
+      - name: year
+        data_type: number
+        description: ""
+
+      - name: month_of_year
+        data_type: varchar
+        description: ""
+
       - name: quantity_budget
         data_type: number
-        description: >
-          "cantidad a pedir cuando acaba el mes de x producto. Se le cambia el nombre para diferenciarse con quantity de pedidos"
-        tests:
-            - positive_values
-      - name: date_to_order
-        data_type: date
-        description: >
-          "Estaba como month pero es una fecha yyyy-mm-dd, fecha en el que se piden las cantidades para reponer inventario"
-      - name: month_of_year
-        data_type: date
-      - name: date_load_utc
-        data_type: date
-        description: >
-          "cambiado a utc, vamos a poner todo en utc."
-      - name: Presupuesto_Producto
-        data_type: number
-        description: >
-          "presupuesto por producto total"
-        tests:
-            - positive_values
+        description: ""
+
+      - name: product_price
+        data_type: float
+        description: "precio del producto"
+
+      - name: budget_per_product
+        data_type: float
+        description: "precio del presupuesto por producto"
+
+      - name: budget_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: budget_date_load
+        data_type: timestamp_tz
+        description: ""

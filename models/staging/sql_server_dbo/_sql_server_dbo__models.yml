@@ -1,79 +1,373 @@
 version: 2
 
 models:
-  - name: stg_sql_server_dbo__addresses
+  - name: stg_sql_server_dbo__users
     description: ""
     columns:
+      - name: user_id
+        data_type: varchar
+        description: "PK para users"
+
       - name: address_id
         data_type: varchar
-        description: ""
-        tests: 
-            - unique
+        description: "FK a tabla addresses"
 
-      - name: zipcode
+      - name: last_name
+        data_type: varchar
+        description: "Apellido"
+
+      - name: first_name
+        data_type: varchar
+        description: "Nombre"
+
+      - name: total_orders
+        data_type: number
+        description: "Número total de pedidos por usuario, calculado a mano ya que estaba vacía"
+
+      - name: phone_number
+        data_type: varchar
+        description: "Número de teléfono Estado Unidense"
+
+      - name: is_valid_phone_number
+        data_type: boolean
+        description: "verifico con un unit test que los teléfonos introducidos son correctos"
+
+      - name: email
+        data_type: varchar
+        description: "Correo electrónico"
+
+      - name: is_valid_email_address
+        data_type: boolean
+        description: "verifico con un unit test que los emails introducidos son correctos."
+
+      - name: user_updated_at
+        data_type: timestamp_tz
+        description: "la última vez que se actualizó el usuario"
+
+      - name: user_created_at
+        data_type: timestamp_tz
+        description: "cuando se creó el usuario"
+
+      - name: user_date_deleted
+        data_type: boolean
+        description: "indica con true o false si se ha borrado el usuario (útil para snapshots)"
+
+      - name: user_date_load
+        data_type: timestamp_tz
+        description: "indica cuándo se cargaron los datos desde la ingesta, voy a omitir estas dos descripciones en las demás tablas"
+
+  - name: stg_sql_server_dbo__tracking
+    description: "He pasado tracking_id de orders a una tabla nueva debido a posibles problemas de escalabilidad"
+    columns:
+      - name: tracking_id
+        data_type: varchar
+        description: "id donde he quitado los nulos"
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('stg_sql_server_dbo__orders')
+              field: tracking_id
+
+      - name: shipping_service
+        data_type: varchar
+        description: "las distintas opciones de empresas de envío"
+
+  - name: stg_sql_server_dbo__tiempo
+    description: "tabla de tiempo útil para los usuarios de POWERBI"
+    columns:
+      - name: date_day
+        data_type: date
+        description: ""
+
+      - name: prior_date_day
+        data_type: date
+        description: ""
+
+      - name: next_date_day
+        data_type: date
+        description: ""
+
+      - name: prior_year_date_day
+        data_type: date
+        description: ""
+
+      - name: prior_year_over_year_date_day
+        data_type: date
+        description: ""
+
+      - name: day_of_week
         data_type: number
         description: ""
 
-      - name: country
+      - name: day_of_week_iso
+        data_type: number
+        description: ""
+
+      - name: day_of_week_name
         data_type: varchar
         description: ""
 
-      - name: address
+      - name: day_of_week_name_short
         data_type: varchar
         description: ""
 
-      - name: state
+      - name: day_of_month
+        data_type: number
+        description: ""
+
+      - name: day_of_year
+        data_type: number
+        description: ""
+
+      - name: week_start_date
+        data_type: date
+        description: ""
+
+      - name: week_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_week_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_week_end_date
+        data_type: date
+        description: ""
+
+      - name: week_of_year
+        data_type: number
+        description: ""
+
+      - name: iso_week_start_date
+        data_type: date
+        description: ""
+
+      - name: iso_week_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_iso_week_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_iso_week_end_date
+        data_type: date
+        description: ""
+
+      - name: iso_week_of_year
+        data_type: number
+        description: ""
+
+      - name: prior_year_week_of_year
+        data_type: number
+        description: ""
+
+      - name: prior_year_iso_week_of_year
+        data_type: number
+        description: ""
+
+      - name: month_of_year
+        data_type: number
+        description: ""
+
+      - name: month_name
         data_type: varchar
         description: ""
 
-      - name: _fivetran_deleted
-        data_type: boolean
+      - name: month_name_short
+        data_type: varchar
         description: ""
 
-      - name: _fivetran_synced
-        data_type: timestamp_tz
+      - name: month_start_date
+        data_type: date
         description: ""
 
-  - name: stg_sql_server_dbo__events
-    description: ""
+      - name: month_end_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_month_start_date
+        data_type: date
+        description: ""
+
+      - name: prior_year_month_end_date
+        data_type: date
+        description: ""
+
+      - name: quarter_of_year
+        data_type: number
+        description: ""
+
+      - name: quarter_start_date
+        data_type: date
+        description: ""
+
+      - name: quarter_end_date
+        data_type: date
+        description: ""
+
+      - name: year_number
+        data_type: number
+        description: ""
+
+      - name: year_start_date
+        data_type: date
+        description: ""
+
+      - name: year_end_date
+        data_type: date
+        description: ""
+
+  - name: stg_sql_server_dbo__session
+    description: "Util para posible expansión de negocio (dispositivo, duración de la sesión, etc.)"
     columns:
-      - name: event_id
+      - name: session_id
         data_type: varchar
-        description: ""
-
-      - name: page_url
-        data_type: varchar
-        description: ""
-
-      - name: event_type
-        data_type: varchar
-        description: ""
+        description: "PK"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__events')
+              field: session_id
 
       - name: user_id
         data_type: varchar
+        description: "FK"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__users')
+              field: user_id
+
+  - name: stg_sql_server_dbo__promos
+    description: "Igual que el source pero con un nuevo promo_id y desc_promo: no_promo"
+    columns:
+      - name: promo_id
+        data_type: varchar
+        description: ""
+        tests:
+          - unique
+          - not_null
+
+      - name: desc_promo
+        data_type: varchar
         description: ""
 
+      - name: discount
+        data_type: number
+        description: "en el caso de no_promo el descuento es 0"
+
+      - name: promo_status
+        data_type: varchar
+        description: "en el caso de no_promo el descuento siempre está activo"
+
+      - name: promo_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: promo_date_load
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg_sql_server_dbo__products
+    description: "Tabla productos de source"
+    columns:
       - name: product_id
         data_type: varchar
         description: ""
 
-      - name: session_id
+      - name: product_price
+        data_type: float
+        description: ""
+
+      - name: product_name
         data_type: varchar
         description: ""
 
-      - name: created_at
-        data_type: timestamp_ntz
+      - name: product_inventory
+        data_type: number
         description: ""
 
-      - name: order_id
-        data_type: varchar
-        description: ""
-
-      - name: _fivetran_deleted
+      - name: product_date_deleted
         data_type: boolean
         description: ""
 
-      - name: _fivetran_synced
+      - name: product_date_load
+        data_type: timestamp_tz
+        description: ""
+
+  - name: stg_sql_server_dbo__orders
+    description: "Tabla orders con algunos cambios como quitar columna shipping_service"
+    columns:
+      - name: order_id
+        data_type: varchar
+        description: "PK"
+
+      - name: address_id
+        data_type: varchar
+        description: "FK"
+
+      - name: promo_id
+        data_type: varchar
+        description: "FK"
+        tests:
+          - relationships:
+              field: promo_id
+              to: ref('stg_sql_server_dbo__promos')
+
+      - name: user_id
+        data_type: varchar
+        description: "FK"
+        tests:
+          - relationships:
+              field: user_id
+              to: ref('stg_sql_server_dbo__users')
+
+      - name: tracking_id
+        data_type: varchar
+        description: ""
+        tests:
+          - relationships:
+              field: tracking_id
+              to: ref('stg_sql_server_dbo__tracking')
+
+      - name: order_cost
+        data_type: float
+        description: ""
+
+      - name: shipping_cost
+        data_type: float
+        description: ""
+
+      - name: order_total
+        data_type: float
+        description: ""
+
+      - name: order_status
+        data_type: varchar
+        description: "delivered, package_shipped, etc"
+
+      - name: order_created_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: estimated_delivery_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: delivered_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: orders_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: orders_date_load
         data_type: timestamp_tz
         description: ""
 
@@ -88,174 +382,141 @@ models:
         data_type: varchar
         description: ""
 
-      - name: quantity
+      - name: quantity_product
         data_type: number
-        description: ""
+        description: "cantidad de product_id por order_id"
 
-      - name: _fivetran_deleted
+      - name: order_items_date_deleted
         data_type: boolean
         description: ""
 
-      - name: _fivetran_synced
+      - name: order_items_date_load
         data_type: timestamp_tz
         description: ""
 
-  - name: stg_sql_server_dbo__orders
-    description: ""
+  - name: stg_sql_server_dbo__events
+    description: "He decidido crear las tablas session, event_type, event_orders y event_products a partir de esta"
     columns:
-      - name: order_id
+      - name: event_id
         data_type: varchar
-        description: ""
-
-      - name: shipping_service
-        data_type: varchar
-        description: ""
-
-      - name: shipping_cost
-        data_type: float
-        description: "Prorratear este valor en una tabla auxiliar."
-
-      - name: address_id
-        data_type: varchar
-        description: ""
-
-      - name: created_at
-        data_type: timestamp_tz
-        description: ""
-
-      - name: promo_id
-        data_type: varchar
-        description: ""
-
-      - name: estimated_delivery_at
-        data_type: timestamp_tz
-        description: ""
-
-      - name: order_cost
-        data_type: float
         description: ""
 
       - name: user_id
         data_type: varchar
         description: ""
 
-      - name: order_total
-        data_type: float
+      - name: session_id
+        data_type: varchar
+        description: "FK"
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              field: session_id
+              to: ref('stg_sql_server_dbo__session')
+
+      - name: page_url
+        data_type: varchar
         description: ""
 
-      - name: delivered_at
+      - name: event_type_id
+        data_type: varchar
+        description: "FK a tabla event_type"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__event_type')
+              field: event_type_id
+
+      - name: event_created_at
         data_type: timestamp_tz
         description: ""
 
-      - name: tracking_id
-        data_type: varchar
-        description: ""
-
-      - name: status
-        data_type: varchar
-        description: ""
-
-      - name: _fivetran_deleted
+      - name: orders_date_deleted
         data_type: boolean
         description: ""
 
-      - name: _fivetran_synced
+      - name: orders_date_load
         data_type: timestamp_tz
         description: ""
 
-  - name: stg_sql_server_dbo__products
-    description: ""
+  - name: stg_sql_server_dbo__event_type
+    description: "Creada debido a que puede crecer en un futuro (wishlists, product_shared, order_cancelled, etc.)"
     columns:
+      - name: event_type_id
+        data_type: varchar
+        description: "PK"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_sql_server_dbo__events')
+              field: event_type_id
+
+      - name: event_type
+        data_type: varchar
+        description: "tipo de evento"
+
+      - name: category
+        data_type: varchar
+        description: "Si el evento pertenece a order, product, equipo técnico, etc."
+
+  - name: stg_sql_server_dbo__event_products
+    description: "tabla puente para que no aparezcan valores vacíos en events. relacion muchos a muchos"
+    columns:
+      - name: event_id
+        data_type: varchar
+        description: "PK"
+
       - name: product_id
         data_type: varchar
-        description: ""
+        description: "PK"
 
-      - name: price
-        data_type: float
-        description: ""
-
-      - name: name
-        data_type: varchar
-        description: ""
-
-      - name: inventory
-        data_type: number
-        description: ""
-
-      - name: date_deleted_utc
-        data_type: boolean
-        description: ""
-
-      - name: date_load_utc
-        data_type: timestamp_tz
-        description: ""
-
-  - name: stg_sql_server_dbo__promos
-    description: ""
+  - name: stg_sql_server_dbo__event_orders
+    description: "tabla puente para que no aparezcan valores vacíos en events. relacion muchos a muchos"
     columns:
-      - name: promo_id
+      - name: event_id
         data_type: varchar
-        description: ""
+        description: "PK"
 
-      - name: discount
-        data_type: number
-        description: ""
-
-      - name: status
+      - name: order_id
         data_type: varchar
-        description: ""
+        description: "PK"
 
-      - name: _fivetran_deleted
-        data_type: boolean
-        description: ""
-
-      - name: _fivetran_synced
-        data_type: timestamp_tz
-        description: ""
-
-  - name: stg_sql_server_dbo__users
-    description: ""
+  - name: stg_sql_server_dbo__addresses
+    description: "direcciones de los usuarios, he sacado fuera la dimension country"
     columns:
-      - name: user_id
-        data_type: varchar
-        description: ""
-
-      - name: updated_at
-        data_type: timestamp_tz
-        description: ""
-
       - name: address_id
         data_type: varchar
-        description: ""
+        description: "PK"
 
-      - name: last_name
+      - name: country_id
         data_type: varchar
-        description: ""
+        description: "FK"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('base_sql_server_dbo__countries')
+              field: country_id
 
-      - name: created_at
-        data_type: timestamp_tz
-        description: ""
-
-      - name: phone_number
-        data_type: varchar
-        description: ""
-
-      - name: total_orders
+      - name: zipcode
         data_type: number
         description: ""
 
-      - name: first_name
+      - name: address
         data_type: varchar
         description: ""
 
-      - name: email
+      - name: state
         data_type: varchar
         description: ""
 
-      - name: _fivetran_deleted
+      - name: address_date_deleted
         data_type: boolean
         description: ""
 
-      - name: _fivetran_synced
+      - name: address_date_load
         data_type: timestamp_tz
         description: ""
