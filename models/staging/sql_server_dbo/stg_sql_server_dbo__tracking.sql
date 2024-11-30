@@ -14,4 +14,4 @@ with src_orders as(
     from {{ source('sql_server_dbo','orders') }}
 )
 
-select * from src_orders
+select DISTINCT * from src_orders
