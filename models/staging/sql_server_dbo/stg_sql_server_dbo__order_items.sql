@@ -17,9 +17,9 @@ renamed as (
     select
         order_id,
         product_id,
-        quantity as Cantidad_Pedida_Producto,
-        _fivetran_deleted,
-        _fivetran_synced
+        quantity as quantity_product,
+        coalesce(_fivetran_deleted, FALSE) AS order_items_date_deleted,
+        convert_timezone('UTC', _fivetran_synced) as order_items_date_load
 
     from src_order_items
 

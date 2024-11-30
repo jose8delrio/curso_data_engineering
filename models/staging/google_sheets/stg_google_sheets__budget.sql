@@ -7,7 +7,7 @@
 
 WITH base_budget AS (
     SELECT * 
-    FROM {{ ref("_base_google_sheets__budget") }}
+    FROM {{ ref("base_google_sheets__budget") }}
 ),
 
 products as (
@@ -24,7 +24,7 @@ select
     b.month_of_year,
     b.quantity_budget,
     p.price as product_price,
-    ROUND(b.quantity_budget * p.price,2) as budger_per_product,  -- Multiplicación para calcular el precio total
+    ROUND(b.quantity_budget * p.price,2) as budget_per_product,  -- Multiplicación para calcular el precio total
     coalesce (null, FALSE) AS budget_date_deleted,
     b.budget_date_load as budget_date_load
 from base_budget b

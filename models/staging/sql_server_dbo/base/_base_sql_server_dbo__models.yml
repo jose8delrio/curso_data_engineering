@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: base_sql_server_dbo__countries
+    description: "base de ciudades por si se añaden nuevas."
+    columns:
+      - name: country_id
+        data_type: varchar
+        description: ""
+
+      - name: country_name
+        data_type: varchar
+        description: ""
+
+  - name: base_sql_server_dbo__users
+    description: ""
+    columns:
+      - name: user_id
+        data_type: varchar
+        description: ""
+
+      - name: address_id
+        data_type: varchar
+        description: ""
+
+      - name: last_name
+        data_type: varchar
+        description: ""
+
+      - name: first_name
+        data_type: varchar
+        description: ""
+
+      - name: total_orders
+        data_type: number
+        description: ""
+
+      - name: phone_number
+        data_type: varchar
+        description: ""
+
+      - name: email
+        data_type: varchar
+        description: ""
+
+      - name: user_updated_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: user_created_at
+        data_type: timestamp_tz
+        description: ""
+
+      - name: user_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: user_date_load
+        data_type: timestamp_tz
+        description: ""

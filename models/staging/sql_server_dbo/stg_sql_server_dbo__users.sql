@@ -9,7 +9,7 @@ with
 
 base_users as (
 
-    select * from {{ ref('_base_sql_server_dbo__users') }}
+    select * from {{ ref('base_sql_server_dbo__users') }}
 
 ),
 
