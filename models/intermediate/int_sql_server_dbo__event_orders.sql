@@ -7,7 +7,7 @@
 WITH 
 src_events AS (
     SELECT * 
-    FROM {{ source('sql_server_dbo', 'events') }}
+    FROM {{ ref('stg_sql_server_dbo__events') }}
 ),
 
 event_order_mapping AS (
@@ -16,11 +16,15 @@ event_order_mapping AS (
         CASE 
             WHEN order_id IS NOT NULL AND order_id != '' THEN order_id
             ELSE md5('no_order')
-        END AS order_id
+        END AS order_id,
+        events_date_deleted,
+        events_date_load
     FROM src_events
 )
 
 SELECT DISTINCT 
     event_id,
-    order_id
+    order_id,
+    events_date_deleted AS event_orders_date_deleted,
+    events_date_load AS event_orders_date_load
 FROM event_order_mapping

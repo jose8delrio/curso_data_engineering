@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: int_sql_server_dbo__event_orders
+    description: "Kimball sugiere crear snapshots (scd tipo 2) para las tablas puente de dimensiones multivaluadas."
+    columns:
+      - name: event_id
+        data_type: varchar
+        description: ""
+
+      - name: order_id
+        data_type: varchar
+        description: ""
+
+      - name: event_orders_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: event_orders_date_load
+        data_type: timestamp_tz
+        description: ""
+
+  - name: int_sql_server_dbo__event_products
+    description: "Kimball sugiere crear snapshots (scd tipo 2) para las tablas puente de dimensiones multivaluadas."
+    columns:
+      - name: event_id
+        data_type: varchar
+        description: ""
+
+      - name: product_id
+        data_type: varchar
+        description: ""
+
+      - name: event_products_date_deleted
+        data_type: boolean
+        description: ""
+
+      - name: event_products_date_load
+        data_type: timestamp_tz
+        description: ""
