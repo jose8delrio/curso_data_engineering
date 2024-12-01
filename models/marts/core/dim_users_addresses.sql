@@ -1,3 +1,10 @@
+{{
+  config(
+    materialized='table'
+  )
+}}
+
+
 with users as (
     select *
     from {{ ref('stg_sql_server_dbo__users') }}

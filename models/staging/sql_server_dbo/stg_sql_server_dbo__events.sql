@@ -19,13 +19,14 @@ renamed as (
     select
         event_id,
         user_id,
-        --product_id,
+        product_id,
         session_id,
-        page_url,
+        order_id,
         {{dbt_utils.generate_surrogate_key(['event_type'])}} as event_type_id,
+        page_url,
         convert_timezone('UTC', created_at) as event_created_at,
-        coalesce(_fivetran_deleted, FALSE) AS orders_date_deleted,
-        convert_timezone('UTC', _fivetran_synced) as orders_date_load
+        coalesce(_fivetran_deleted, FALSE) AS events_date_deleted,
+        convert_timezone('UTC', _fivetran_synced) as events_date_load
 
     from src_events
 

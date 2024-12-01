@@ -76,6 +76,8 @@ models:
   - name: stg_sql_server_dbo__tiempo
     description: "tabla de tiempo útil para los usuarios de POWERBI"
     columns:
+      - name: time_id
+        data_type: varchar
       - name: date_day
         data_type: date
         description: ""
@@ -414,6 +416,11 @@ models:
           - relationships:
               field: session_id
               to: ref('stg_sql_server_dbo__session')
+      - name: product_id
+        data_type: varchar
+      
+      - name: order_id
+        data_type: varchar
 
       - name: page_url
         data_type: varchar
