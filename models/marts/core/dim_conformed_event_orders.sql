@@ -1,4 +1,4 @@
-{{ config(materialized='incremental', unique_key='EVENT_ID, ORDER_ID') }}
+{{ config(materialized='incremental', unique_key='EVENT_ID') }}
 
 WITH orders_per_event AS (
     SELECT

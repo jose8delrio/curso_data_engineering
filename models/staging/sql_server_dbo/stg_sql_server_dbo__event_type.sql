@@ -5,7 +5,7 @@
 }}
 
 WITH src_events AS (
-    SELECT * 
+    SELECT DISTINCT * 
     FROM {{ source('sql_server_dbo', 'events') }}
 ),
 

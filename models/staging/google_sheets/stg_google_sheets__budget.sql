@@ -7,7 +7,7 @@
 
 WITH base_budget AS (
     SELECT * 
-    FROM {{ ref("base_google_sheets__budget") }}
+    FROM {{ ref('base_google_sheets__budget') }}
 ),
 
 products as (
@@ -20,6 +20,7 @@ products as (
 select
     b.BUDGET_ID,
     b.product_id,
+    b.budget_date,
     b.year,
     b.month_of_year,
     b.quantity_budget,

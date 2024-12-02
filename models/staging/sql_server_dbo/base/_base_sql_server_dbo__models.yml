@@ -1,6 +1,7 @@
 version: 2
 
 models:
+
   - name: base_sql_server_dbo__countries
     description: "base de ciudades por si se añaden nuevas."
     columns:
@@ -39,9 +40,17 @@ models:
         data_type: varchar
         description: ""
 
+      - name: is_valid_phone_number
+        data_type: boolean
+        description: "verifico con un unit test que los teléfonos introducidos son correctos"
+
       - name: email
         data_type: varchar
-        description: ""
+        description: "Correo electrónico"
+
+      - name: is_valid_email_address
+        data_type: boolean
+        description: "verifico con un unit test que los emails introducidos son correctos."
 
       - name: user_updated_at
         data_type: timestamp_tz
