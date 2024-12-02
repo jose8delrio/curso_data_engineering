@@ -11,6 +11,9 @@ models:
       - name: product_id
         data_type: varchar
         description: ""
+      
+      - name: budget_date
+        data_type: date
 
       - name: year
         data_type: number

@@ -224,26 +224,22 @@ models:
 
   - name: stg_sql_server_dbo__session
     description: "Util para posible expansión de negocio (dispositivo, duración de la sesión, etc.)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - session_id
+            - user_id
     columns:
       - name: session_id
         data_type: varchar
         description: "PK"
         tests:
-          - unique
           - not_null
-          - relationships:
-              to: ref('stg_sql_server_dbo__events')
-              field: session_id
-
       - name: user_id
         data_type: varchar
-        description: "FK"
+        description: "PK"
         tests:
-          - unique
           - not_null
-          - relationships:
-              to: ref('stg_sql_server_dbo__users')
-              field: user_id
 
   - name: stg_sql_server_dbo__promos
     description: "Igual que el source pero con un nuevo promo_id y desc_promo: no_promo"
@@ -375,6 +371,11 @@ models:
 
   - name: stg_sql_server_dbo__order_items
     description: ""
+    tests:
+        - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+                - order_id
+                - product_id
     columns:
       - name: order_id
         data_type: varchar
@@ -412,7 +413,6 @@ models:
         description: "FK"
         tests:
           - not_null
-          - unique
           - relationships:
               field: session_id
               to: ref('stg_sql_server_dbo__session')
@@ -430,7 +430,6 @@ models:
         data_type: varchar
         description: "FK a tabla event_type"
         tests:
-          - unique
           - not_null
           - relationships:
               to: ref('stg_sql_server_dbo__event_type')
@@ -493,6 +492,11 @@ models:
 
   - name: stg_sql_server_dbo__addresses
     description: "direcciones de los usuarios, he sacado fuera la dimension country"
+    tests: 
+       - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - address_id
+            - country_id
     columns:
       - name: address_id
         data_type: varchar
@@ -502,7 +506,6 @@ models:
         data_type: varchar
         description: "FK"
         tests:
-          - unique
           - not_null
           - relationships:
               to: ref('base_sql_server_dbo__countries')

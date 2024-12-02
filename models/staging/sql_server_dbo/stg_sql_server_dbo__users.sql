@@ -31,9 +31,9 @@ renamed_users as (
             else B.total_orders
         end as total_orders,
         phone_number,
-        coalesce (regexp_like(phone_number, '^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')= true,false) as is_valid_phone_number,
+        is_valid_phone_number,
         email,
-        coalesce (regexp_like(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')= true,false) as is_valid_email_address,
+        is_valid_email_address,
         user_updated_at,
         user_created_at,
         user_date_deleted,

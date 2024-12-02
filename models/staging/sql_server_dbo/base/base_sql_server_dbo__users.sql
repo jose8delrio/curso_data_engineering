@@ -21,9 +21,9 @@ renamed as (
         first_name,
         coalesce(total_orders,0) as total_orders,
         phone_number,
-        --coalesce (regexp_like(phone_number, '^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')= true,false) as is_valid_phone_number, esto en la staging
+        coalesce (regexp_like(phone_number, '^(\([0-9]{3}\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')= true,false) as is_valid_phone_number,
         email,
-        --coalesce (regexp_like(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')= true,false) as is_valid_email_address, esto en la staging
+        coalesce (regexp_like(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$')= true,false) as is_valid_email_address,
         convert_timezone('UTC', updated_at) as user_updated_at,
         convert_timezone('UTC', created_at) as user_created_at,
         coalesce(_fivetran_deleted, FALSE) AS user_date_deleted,
