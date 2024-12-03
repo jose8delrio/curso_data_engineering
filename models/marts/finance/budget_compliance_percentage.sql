@@ -15,9 +15,9 @@ SELECT
     bd.product_name,
     bd.total_budget_quantity,
     COALESCE(SUM(oi.quantity_product), 0) AS total_sold_quantity, -- Ventas totales por producto
-    -- Calculando la desviación entre presupuesto y ventas
+    -- Calculamos la desviación entre presupuesto y ventas
     COALESCE(SUM(oi.quantity_product), 0) - bd.total_budget_quantity AS quantity_deviation, 
-    -- Calculando el porcentaje de cumplimiento del presupuesto
+    -- Calculamos el porcentaje de cumplimiento del presupuesto
     CASE 
         WHEN bd.total_budget_quantity = 0 THEN 0
         ELSE (COALESCE(SUM(oi.quantity_product), 0) / bd.total_budget_quantity) * 100 
