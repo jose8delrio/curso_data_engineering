@@ -1,68 +1,153 @@
 version: 2
 
 models:
-  - name: dim_bridge_event_products
-    description: ""
+
+
+
+  - name: dim_addresses
+    description: "Tabla de direcciones. Contiene información de localización asociada a usuarios o sin asociación."
     columns:
-      - name: event_id
+      - name: address_id
         data_type: varchar
-        description: ""
-
-      - name: product_id
-        data_type: varchar
-        description: ""
-
-      - name: weight
-        data_type: number
-        description: ""
-
-  - name: dim_conformed_event_orders
-    description: ""
-    columns:
-      - name: event_id
-        data_type: varchar
-        description: ""
-
-      - name: order_id
-        data_type: varchar
-        description: ""
-
-      - name: weight
-        data_type: number
-        description: ""
-
-  - name: dim_event_types
-    description: ""
-    columns:
-      - name: event_type_id
-        data_type: varchar
-        description: ""
-
-      - name: event_type
-        data_type: varchar
-        description: ""
-
-      - name: category
-        data_type: varchar
-        description: ""
-
-  - name: dim_order_conformed
-    description: ""
-    columns:
-      - name: order_item_id
-        data_type: varchar
-        description: ""
+        description: "Identificador único de la dirección."
         tests:
           - unique
           - not_null
 
-      - name: user_address_id
+      - name: country_id
         data_type: varchar
         description: ""
+
+      - name: address
+        data_type: varchar
+        description: ""
+
+      - name: state
+        data_type: varchar
+        description: ""
+
+      - name: zipcode
+        data_type: number
+        description: ""
+
+  - name: dim_users
+    description: "Dimensión de usuarios. Contiene información de identificación personal."
+    columns:
+      - name: user_id
+        description: "Identificador único del usuario."
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        data_type: varchar
+        description: ""
+
+      - name: last_name
+        data_type: varchar
+        description: ""
+
+      - name: phone_number
+        data_type: varchar
+        description: ""
+
+  - name: dim_bridge_event_products
+    description: "Tabla puente que conecta eventos y productos con información adicional como peso."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_id
+            - product_id
+    columns:
+      - name: event_id
+        description: "Identificador único del evento."
+        data_type: varchar
+        tests:
+          - relationships:
+              to: ref('fct_events')
+              field: event_id
+
+      - name: product_id
+        description: "Identificador único del producto."
+        data_type: varchar
+
+      - name: weight
+        data_type: number
+        description: ""
+
+  - name: dim_event_orders_conformed
+    description: "Dimensión conformada de eventos y órdenes."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_id
+            - order_id
+    columns:
+      - name: event_id
+        description: "Identificador único del evento."
+        data_type: varchar
+
+      - name: order_id
+        description: "Identificador único de la orden asociada al evento."
+        data_type: varchar
+
+
+  - name: dim_event_types
+    description: "Tabla de tipos de eventos. Clasifica los eventos por tipo y categoría."
+    columns:
+      - name: event_type_id
+        description: "Identificador único del tipo de evento."
+        data_type: varchar
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('fct_events')
+              field: event_type_id
+
+      - name: event_type
+        description: "Tipo de evento (e.g., click, view)."
+        data_type: varchar
+        
+      - name: category
+        description: "Categoría del evento (e.g., producto, usuario)."
+        data_type: varchar
+
+  - name: dim_order_order_items_conformed
+    description: "Dimensión conformada de órdenes e ítems asociados."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - order_id
+            - order_item_id
+    columns:
+      - name: order_id
+        description: "Identificador único de la orden."
+        data_type: varchar
+        tests:
+          - relationships:
+              to: ref('fct_orders')
+              field: order_id
+
+      - name: order_item_id
+        description: "Identificador único del ítem asociado a la orden."
+        data_type: varchar
+        tests:
+          - relationships:
+              to: ref('fct_order_items')
+              field: order_item_id
 
       - name: promo_id
         data_type: varchar
         description: ""
+
+      - name: address_id
+        data_type: varchar
+        description: ""
+
+      - name: user_id
+        data_type: varchar
 
       - name: shipping_service
         data_type: varchar
@@ -72,12 +157,20 @@ models:
         data_type: varchar
         description: ""
 
+      - name: order_created_at
+        data_type: timestamp_tz
+        description: ""
+
       - name: estimated_delivery_at
         data_type: timestamp_tz
         description: ""
 
+      - name: delivered_at
+        data_type: timestamp_tz
+        description: ""
+
   - name: dim_products
-    description: ""
+    description: "Dimensión de productos. Contiene información detallada sobre productos."
     columns:
       - name: product_id
         data_type: varchar
@@ -104,7 +197,7 @@ models:
         description: ""
 
   - name: dim_promos
-    description: ""
+    description: "Dimensión de promociones. Contiene información sobre descuentos y estado."
     columns:
       - name: promo_id
         data_type: varchar
@@ -131,7 +224,7 @@ models:
         description: ""
 
   - name: dim_time
-    description: ""
+    description: "Dimensión de tiempo. Contiene datos útiles para análisis temporales."
     columns:
       - name: time_id
         data_type: varchar
@@ -281,20 +374,14 @@ models:
         data_type: date
         description: ""
 
-  - name: dim_users_addresses
+  - name: dim_users
     description: ""
     columns:
-      - name: user_address_id
+      - name: user_id
         data_type: varchar
         description: ""
-        tests:
-          - not_null
-          - unique
-          - relationships:
-              to: ref('dim_order_conformed')
-              field: user_address_id
 
-      - name: country_id
+      - name: address_id
         data_type: varchar
         description: ""
 
@@ -310,36 +397,28 @@ models:
         data_type: varchar
         description: ""
 
-      - name: address
-        data_type: varchar
-        description: ""
-
-      - name: state
-        data_type: varchar
-        description: ""
-
-      - name: country_name
-        data_type: varchar
-        description: ""
-
-      - name: zipcode
-        data_type: number
-        description: ""
-
   - name: fct_budget
-    description: ""
+    description: "Tabla de hechos para presupuestos. Contiene métricas de presupuesto por producto y tiempo."
     columns:
       - name: budget_id
         data_type: varchar
         description: ""
 
       - name: product_id
+        description: "Identificador único del producto presupuestado."
         data_type: varchar
-        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
 
       - name: time_id
+        description: "Identificador único del tiempo presupuestado."
         data_type: varchar
-        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_time')
+              field: time_id
 
       - name: year
         data_type: number
@@ -370,23 +449,34 @@ models:
         description: ""
 
   - name: fct_events
-    description: ""
+    description: "Tabla de hechos para eventos. Contiene métricas relacionadas con eventos de usuarios."
     columns:
       - name: event_id
         data_type: varchar
         description: ""
+        tests:
+            - unique
+            
 
       - name: user_id
+        description: "Identificador único del usuario asociado al evento."
         data_type: varchar
-        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
 
       - name: session_id
         data_type: varchar
         description: ""
-
+    
       - name: event_type_id
+        description: "Identificador único del tipo de evento."
         data_type: varchar
-        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_event_types')
+              field: event_type_id
 
       - name: time_id
         data_type: varchar
@@ -409,21 +499,19 @@ models:
         description: ""
 
   - name: fct_order_items
-    description: ""
+    description: "Tabla de hechos para ítems de órdenes. Contiene métricas a nivel de ítem."
     columns:
       - name: order_item_id
         data_type: varchar
         description: ""
-        tests:
-          - not_null
-          - unique
-          - relationships:
-              to: ref('dim_order_conformed')
-              field: order_item_id
 
       - name: product_id
+        description: "Identificador único del producto en el ítem."
         data_type: varchar
-        description: ""
+        tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
 
       - name: quantity_product
         data_type: number
@@ -440,26 +528,18 @@ models:
         data_type: varchar
         description: ""
 
-      - name: time_id
+      - name: tracking_id
         data_type: varchar
-        description: ""
-
-      - name: shipping_cost
-        data_type: float
         description: ""
 
       - name: order_cost
         data_type: float
         description: ""
 
-      - name: order_total
+      - name: shipping_cost
         data_type: float
         description: ""
 
-      - name: order_created_at
-        data_type: timestamp_tz
-        description: ""
-
-      - name: delivered_at
-        data_type: timestamp_tz
+      - name: order_total
+        data_type: float
         description: ""
