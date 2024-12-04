@@ -22,7 +22,7 @@ sources:
       - name: addresses
         loaded_at_field: _FIVETRAN_SYNCED
         description: >
-          Direcciones donde VIVEN los usuarios.
+          Direcciones donde viven o envían pedidos de los usuarios.
         columns:
           - name: ADDRESS_ID
           - name: ZIPCODE
